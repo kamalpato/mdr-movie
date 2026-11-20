@@ -1,0 +1,60 @@
+name: MandiriMovies
+options:
+  bundleIdPrefix: com.mandiri
+  deploymentTarget:
+    iOS: "18.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+settings:
+  BASE_SDK: iphoneos
+  SWIFT_VERSION: "5.0"
+  TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  MandiriMovies:
+    type: application
+    platform: iOS
+    sources:
+      - path: MandiriMovies
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.mandiri.movies
+      INFOPLIST_FILE: MandiriMovies/Resources/Info.plist
+      GENERATE_INFOPLIST_FILE: false
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+      CURRENT_PROJECT_VERSION: 1
+      MARKETING_VERSION: 1.0.0
+    preBuildScripts:
+      - name: Sync Env Secrets
+        basedOnDependencyAnalysis: false
+        script: |
+          set -euo pipefail
+          /bin/bash "${SRCROOT}/Scripts/sync-env.sh"
+  MandiriMoviesTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: MandiriMoviesTests
+    dependencies:
+      - target: MandiriMovies
+    settings:
+      GENERATE_INFOPLIST_FILE: true
+      PRODUCT_BUNDLE_IDENTIFIER: com.mandiri.movies.tests
+schemes:
+  MandiriMovies:
+    build:
+      targets:
+        MandiriMovies: all
+        MandiriMoviesTests: [test]
+    run:
+      config: Debug
+      debugEnabled: false
+    test:
+      config: Debug
+      targets:
+        - MandiriMoviesTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
